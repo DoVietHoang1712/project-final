@@ -102,3 +102,8 @@ dist
 
 # TernJS port file
 .tern-port
+data/mongo/*
+data/redis/persistence/*
+data/redis/run/*
+!data/**/.gitkeep
+/dist
