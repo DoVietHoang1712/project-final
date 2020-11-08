@@ -4,7 +4,6 @@ import { User } from "../users.schema";
 export class UpdateUserDTO extends PartialType(PickType(
     User,
     [
-        "maSv",
         "ten",
         "hoDem",
         "hoTen",

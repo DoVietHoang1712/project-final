@@ -55,7 +55,7 @@ export class FacebookStrategy {
                             facebook: {
                                 id: profile.id,
                             },
-                            vaiTro: ERole.GUEST,
+                            vaiTro: ERole.USER,
                         } as User, undefined, systemInfo).then(result => {
                             result.password = undefined;
                             return result;

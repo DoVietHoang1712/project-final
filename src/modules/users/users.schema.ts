@@ -4,7 +4,7 @@ import { Allow, IsEmail, IsString, Length } from "class-validator";
 import { ObjectId } from "mongodb";
 import * as mongoose from "mongoose";
 import { IsAddress, IsFullName, IsPassword, IsPhoneNumber, IsUsername } from "../../common/decorators/constants.decorator";
-import { EGioiTinh, EPhongBan, ERole } from "../../config/constants";
+import { EGioiTinh, ERole } from "../../config/constants";
 import { StringTool } from "../../tools/string.tool";
 import { USER_CONST } from "./constants/users.constant";
 
@@ -85,24 +85,13 @@ export const UserSchema = new mongoose.Schema({
         type: String,
         maxlength: USER_CONST.PHONE_NUMBER_MAX_LENGTH,
     },
-    queQuan: {
-        type: String,
-        maxlength: USER_CONST.ADDRESS_MAX_LENGTH,
-    },
-    noiSinh: {
-        type: String,
-        maxlength: USER_CONST.ADDRESS_MAX_LENGTH,
-    },
-    danToc: {
-        type: String,
-    },
     diaChiHienNay: {
         type: String,
         maxlength: USER_CONST.ADDRESS_MAX_LENGTH,
     },
     vaiTro: {
         type: Number,
-        enum: [ERole.ADMIN_PHONG_BAN, ERole.ADMIN, ERole.PHU_HUYNH, ERole.GIANG_VIEN, ERole.SINH_VIEN, ERole.GUEST, ERole.CAN_BO_DAO_TAO],
+        enum: [ERole.USER, ERole.ADMIN, ERole.DEVELOPER],
         required: true,
     },
     anhDaiDien: {
@@ -121,8 +110,6 @@ export const UserSchema = new mongoose.Schema({
     google: {
         id: String,
     },
-    userChatId: String,
-    userChatKey: String,
     lastTimeLogin: { type: Date },
     resetToken: {
         password: {
@@ -139,47 +126,11 @@ export const UserSchema = new mongoose.Schema({
         validateEmail: Date,
     },
     expiredAt: Date,
-    chucDanh: {
-        type: String,
-    },
-    hocVi: {
-        type: String,
-    },
-    cq: {
-        type: String,
-    },
-    chucVuQuanLy: {
-        type: String,
-    },
-    chucVuDang: {
-        type: String,
-    },
-    chucVuDoanThe: {
-        type: String,
-    },
-    chucVuBan: {
-        type: String,
-    },
-    donVi: String,
 }, {
     timestamps: true,
     collection: USER_DB,
     toJSON: { virtuals: true },
     collation: { locale: "vi" },
-});
-
-UserSchema.virtual("khoa", {
-    ref: "Khoa",
-    localField: "maKhoa",
-    foreignField: "maKhoa",
-    justOne: true,
-});
-
-UserSchema.virtual("nganh", {
-    ref: "Nganh",
-    localField: "maNganh",
-    foreignField: "maNganh",
-    justOne: true,
 });
 
 UserSchema.index({ expiredAt: 1 }, { expireAfterSeconds: 0 });
@@ -216,9 +167,6 @@ export class SystemInfo {
 }
 
 export class User {
-    @ApiProperty()
-    @IsString()
-    maSv: string;
 
     @ApiProperty()
     @IsString()
@@ -234,13 +182,6 @@ export class User {
 
     @ApiProperty()
     ngaySinh: Date;
-
-    @ApiProperty()
-    gioiTinh: EGioiTinh;
-
-    @ApiProperty()
-    @IsString()
-    cmtCccd: string;
 
     @Length(4, 64)
     @ApiProperty()
@@ -263,15 +204,14 @@ export class User {
     @IsAddress()
     diaChiHienNay: string;
 
-    danToc: string;
-    queQuan: string;
-    noiSinh: string;
-
     @ApiProperty()
     vaiTro: ERole;
 
     @ApiProperty()
     contactEmail: string[];
+
+    @ApiProperty()
+    gioiTinh: EGioiTinh;
 
     @ApiProperty({ type: "string", format: "binary", required: false })
     anhDaiDien: string;
@@ -279,11 +219,6 @@ export class User {
     inactive: boolean;
     validated: boolean;
     updatedAt: Date;
-    userChatId: string;
-    userChatKey: string;
-    @ApiProperty()
-    @Allow()
-    phongBan: EPhongBan;
     systemInfo: SystemInfo;
     facebook: {
         id: string;

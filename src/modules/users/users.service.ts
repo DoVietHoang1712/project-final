@@ -7,7 +7,6 @@ import * as moment from "moment";
 import { MongoError } from "mongodb";
 import { Model } from "mongoose";
 import { isNullOrUndefined } from "util";
-import * as xlsx from "xlsx";
 import { BackendErrorDTO } from "../../common/dto/backend-error.dto";
 import { CommonResponseDTO } from "../../common/dto/common-response.dto";
 import { DeleteResultDTO } from "../../common/dto/delete-result.dto";
@@ -15,9 +14,7 @@ import { DEFAULT_CONCURRENCY_LOW, ERole } from "../../config/constants";
 import { SMTPMailer } from "../../config/mailer";
 import { AV_BACKGROUND_1, AV_BACKGROUND_2, AV_TEXT_1, AV_TEXT_2, DEFAULT_USER_PASSWORD, JWT_SECRET, PROJECT_NAME } from "../../config/secrets";
 import { EmailTool } from "../../tools/email.tools";
-import { ExportTool } from "../../tools/export.tools";
 import { QueryOption, QueryPostOption } from "../../tools/request.tool";
-import { ResponseTool } from "../../tools/response.tool";
 import { EUploadFolder, UploadTool } from "../../tools/upload.tool";
 import { AuthService } from "../auth/auth.service";
 import { AuthToolService } from "../tool/auth-tool/auth-tool.service";
@@ -112,11 +109,6 @@ export class UsersService {
                 if (data.email)
                     this.resendActiveToken(data.email);
                 await this.authService.invalidateOtherUserTokens(userID, jti);
-                this.userQueueService.updateUserChatWithQueue({
-                    userChatId: user.userChatId,
-                    validated: true,
-                    password: data.newPassword,
-                } as User);
                 return this.authService.login(user).then(result => {
                     return { success: true, data: result };
                 });
@@ -146,9 +138,7 @@ export class UsersService {
                 user.password = data.newPassword;
                 try {
                     await user.save();
-                    await this.authService.invalidateOtherUserTokens(userID, jti);
-                    this.userQueueService.updateUserChatWithQueue({ userChatId: user.userChatId, password: data.newPassword } as User);
-                    return this.authService.login(user).then(result => {
+                    await this.authService.invalidateOtherUserTokens(userID, jti); return this.authService.login(user).then(result => {
                         return { success: true, data: result };
                     });
                 } catch (err) {
@@ -165,7 +155,7 @@ export class UsersService {
         if (!this.authTool.validateUsernameOrEmail(user.username)) {
             throw new BackendErrorDTO(400, "USERNAME_INVALID");
         }
-        user.anhDaiDien = user.vaiTro === ERole.SINH_VIEN
+        user.anhDaiDien = user.vaiTro === ERole.USER
             ? encodeURI(`https://ui-avatars.com/api/?rounded=true&bold=true&size=128&name=${user.hoTen}&background=${AV_BACKGROUND_1}&color=${AV_TEXT_1}`)
             : encodeURI(`https://ui-avatars.com/api/?rounded=true&bold=true&size=128&name=${user.hoTen}&background=${AV_BACKGROUND_2}&color=${AV_TEXT_2}`);
         if (anhDaiDien) {
@@ -208,11 +198,8 @@ export class UsersService {
             if (anhDaiDien) {
                 user.anhDaiDien = UploadTool.getURL(EUploadFolder.IMAGE, anhDaiDien.filename);
             }
-            user.vaiTro = ERole.GUEST;
-            // Old service
+            user.vaiTro = ERole.USER;
             user.validated = false;
-
-            // New service
             const expiredDate = new Date();
             expiredDate.setDate(expiredDate.getDate() + 3);
             user.expiredAt = expiredDate;
@@ -339,10 +326,6 @@ export class UsersService {
             }
             return user.save().then((result: User) => {
                 result.password = undefined;
-                this.userQueueService.updateUserChatWithQueue({ ...update, userChatId: result.userChatId } as User);
-                if (anhDaiDien) {
-                    this.userQueueService.setAvatarChatWithQueue({ anhDaiDien: user.anhDaiDien, userChatId: result.userChatId } as User);
-                }
                 return result;
             }).catch((err: MongoError) => {
                 if (err.code === 11000) {
@@ -362,7 +345,6 @@ export class UsersService {
             user.validated = true;
             // AuthTool.deleteJWTKeys(user._id, Date.now());
             await this.authService.invalidateOtherUserTokens(id, jti);
-            this.userQueueService.updateUserChatWithQueue({ userChatId: user.userChatId, validated: true } as User);
             return user.save().catch(err => {
                 console.error(`Error force active user: ${err.message}`);
                 return null;
@@ -378,7 +360,6 @@ export class UsersService {
             user.password = DEFAULT_USER_PASSWORD;
             return user.save().then((result: User) => {
                 result.password = undefined;
-                this.userQueueService.updateUserChatWithQueue({ password: DEFAULT_USER_PASSWORD, userChatId: result.userChatId } as User);
                 return result;
             });
         } else {
@@ -389,7 +370,7 @@ export class UsersService {
     async forceResetPasswordByCond(cond: object) {
         const allU = await this.userModel.find(cond);
         return Promise.map(allU, async (user) => {
-            user.password = user.cmtCccd;
+            user.password = user.username;
             return user.save();
         });
     }

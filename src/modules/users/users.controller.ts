@@ -49,7 +49,7 @@ export class UsersController {
 
     @Get()
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiOkResponse({ type: ResponseDTO })
     @ApiQueryGetMany()
     async findAll(
@@ -71,7 +71,7 @@ export class UsersController {
 
     @Get(":id")
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiOkResponse({ type: ResponseDTO })
     async findById(@Param("id") id: string): Promise<ResponseDTO> {
         return ResponseTool.GET_OK(await this.userService.findById(id));
@@ -79,7 +79,7 @@ export class UsersController {
 
     @Post()
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN, ERole.USER)
     @ApiCreatedResponse({ type: GetUserDTO })
     @ApiConsumes("multipart/form-data")
     @UseInterceptors(FileInterceptor("anhDaiDien", UploadTool.imageUpload))
@@ -125,7 +125,7 @@ export class UsersController {
 
     @Post("force/activate")
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiBody({ type: ForceActiveDTO })
     async forceActivate(
         @Req() req: Request,
@@ -138,7 +138,7 @@ export class UsersController {
 
     @Post("force/reset-password")
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiBody({ type: ForceActiveDTO })
     async forceResetPassword(
         @Body("idUser") id: string,
@@ -149,7 +149,7 @@ export class UsersController {
 
     @Post("force/reset-password-by-cond")
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiQueryCond()
     async forceResetPassByCond(
         @QueryGet() query: QueryPostOption,
@@ -213,7 +213,7 @@ export class UsersController {
 
     @Delete("username/:username")
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiOkResponse({ type: DeleteResultDTO })
     async deleteByUsername(
         @Param("username") username: string,
@@ -225,7 +225,7 @@ export class UsersController {
 
     @Delete(":id")
     @Authorization()
-    @Roles(ERole.ADMIN, ERole.ADMIN_PHONG_BAN)
+    @Roles(ERole.ADMIN)
     @ApiOkResponse({ type: DeleteResultDTO })
     async deleteById(
         @Param("id") id: string,

@@ -8,6 +8,5 @@ export class UpdateMyUserDTO extends PartialType(PickType(
         "diaChiHienNay",
         "anhDaiDien",
         "ngaySinh",
-        "noiSinh",
     ],
 )) { }

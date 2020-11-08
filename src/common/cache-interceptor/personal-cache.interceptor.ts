@@ -19,6 +19,6 @@ export class PersonalCacheInterceptor extends CacheInterceptor {
 
         const url = context.switchToHttp().getRequest<Request>().originalUrl;
         const user = context.switchToHttp().getRequest<Request>().user as User;
-        return `${url}:${user.maSv}`;
+        return `${url}:${user.username}`;
     }
 }

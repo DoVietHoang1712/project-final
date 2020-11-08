@@ -36,6 +36,7 @@
     "@nestjs/swagger": "^4.6.1",
     "@nestjs/typeorm": "^7.1.4",
     "@nestjs/websockets": "^7.5.1",
+    "@sendgrid/mail": "^7.4.0",
     "@types/lru-cache": "^5.1.0",
     "@types/xml2json": "^0.11.3",
     "aws-sdk": "^2.786.0",

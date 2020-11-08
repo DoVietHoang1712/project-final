@@ -40,7 +40,6 @@ export class AuthService {
                     user.password = pass;
                     return user.save().then(result => {
                         user.password = undefined;
-                        this.userQueueService.updateUserChatWithQueue({ userChatId: user.userChatId, password: pass } as User);
                         return result;
                     });
                 } else if (usePassword && user.resetToken.password) {
@@ -65,7 +64,7 @@ export class AuthService {
             sub: user._id,
             jti,
         } as PayloadDTO;
-        this.logger.verbose(`LOGIN: ${user.maSv} ${user._id} ${user.hoTen}`);
+        this.logger.verbose(`LOGIN: ${user.username} ${user._id} ${user.hoTen}`);
         this.authToolService.setJWTKey(user._id, jti, user.inactive ? 5 * 24 * 60 * 60 : JWT_EXP, timestamp);
         return {
             user,
