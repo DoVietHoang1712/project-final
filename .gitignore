@@ -107,3 +107,4 @@ data/redis/persistence/*
 data/redis/run/*
 !data/**/.gitkeep
 /dist
+/uploads
