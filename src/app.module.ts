@@ -1,3 +1,4 @@
+import { FavouriteModule } from "./modules/favourite/favourite.module";
 import { VerifyModule } from "./modules/verify/verify.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UsersModule } from "./modules/users/users.module";
@@ -21,6 +22,7 @@ const redisStore = require("cache-manager-redis-store");
         UsersModule,
         AuthModule,
         VerifyModule,
+        FavouriteModule,
     ],
     providers: [
         {
