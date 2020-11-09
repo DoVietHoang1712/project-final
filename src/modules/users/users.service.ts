@@ -1,3 +1,4 @@
+import { MailService } from "./../../config/mail-server";
 import { StringTool } from "./../../tools/string.tool";
 import { forwardRef, HttpStatus, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -246,18 +247,13 @@ export class UsersService {
     }
 
     async changeEmail(username: string, body: ChangeEmailDTO, jti: string): Promise<CommonResponseDTO> {
-        // Xác thực thông tin user
         const user = await this.authService.validateUser(username, body.password);
-        // Nếu thông tin xác thực là chính xác
         if (user) {
-            // Nếu user chưa có email hoặc email đổi khác email cũ
             if (!user.email || user.email !== body.email) {
-                // Kiểm tra xem đã tồn tại email này chưa
                 const check = await this.userModel.findOne({ email: body.email });
                 if (check) {
                     throw new BackendErrorDTO(HttpStatus.CONFLICT, "EMAIL_DUPLICATED");
                 }
-                // Nếu chưa tồn tại thì gán email mới và đặt validated = false
                 const newUser = await this.userModel.findByIdAndUpdate(
                     user._id,
                     { email: body.email, validated: false },

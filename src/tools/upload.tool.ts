@@ -54,11 +54,11 @@ export class UploadTool {
     }
 
     static getURL(directory: EUploadFolder, filename: string) {
-        return `${SERVER_ADDRESS}/${directory}/${filename}`;
+        return `${SERVER_ADDRESS}:3020/${directory}/${filename}`;
     }
 
     static getURLMultiDir(directory: string, filename: string) {
-        return `${SERVER_ADDRESS}/${directory}/${filename}`;
+        return `${SERVER_ADDRESS}:3020/${directory}/${filename}`;
     }
 
     static getPath(fileUrl: string) {

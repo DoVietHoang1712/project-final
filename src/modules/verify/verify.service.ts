@@ -18,7 +18,6 @@ export class VerifyService {
         try {
             const id = (jwt.verify(activeToken, JWT_SECRET) as PayloadDTO).sub;
             const user = await this.userModel.findById(id).select("-createdAt -updatedAt").lean().exec() as UserDocument;
-            console.log(user);
             if (user) {
                 return this.userModel.findByIdAndUpdate(
                     user._id,

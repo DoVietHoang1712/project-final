@@ -61,3 +61,7 @@ export const GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET");
 export const AWS_REGION = env("AWS_REGION");
 export const AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID");
 export const AWS_SECRET_ACCESS_KEY = env("AWS_SECRET_ACCESS_KEY");
+
+// MAILGUN SERVER
+export const MAILGUN_API_KEY = env("MAILGUN_API_KEY");
+export const MAILGUN_DOMAIN = env("MAILGUN_DOMAIN");
