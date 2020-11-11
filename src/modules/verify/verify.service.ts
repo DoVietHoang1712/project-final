@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import * as jwt from "jsonwebtoken";
 import { Model } from "mongoose";
+import { PugTools } from "src/tools/pug.tools";
 import { JWT_SECRET } from "../../config/secrets";
 import { AuthService } from "../auth/auth.service";
 import { PayloadDTO } from "../auth/dto/payload.dto";
@@ -26,14 +27,25 @@ export class VerifyService {
                 )
                     .then(async () => {
                         await this.authService.invalidateOtherUserTokens(user._id, null);
+                        return PugTools.res({
+                            message: "ACTIVE_SUCCESS",
+                            success: true,
+                        });
                     }).catch(err => {
                         console.error(err);
+                        return PugTools.res({
+                            message: "ACTIVE_USER_ERROR",
+                        });
                     });
             } else {
-                return console.log("Token invalid");
+                return PugTools.res({
+                    message: "Token invalid",
+                });
             }
         } catch (err) {
-            throw new Error("Token Invalid");
+            return PugTools.res({
+                message: "Token invalid",
+            });
         }
     }
 
@@ -43,20 +55,31 @@ export class VerifyService {
             const user = await this.userModel.findById(id).select("-createdAt -updatedAt").exec() as UserDocument;
             if (user) {
                 if (user.validated === true) {
-                    return console.log("Email verify");
+                    return PugTools.res({
+                        message: "Email verify",
+                    });
                 }
                 user.validated = true;
                 return user.save().then(async () => {
                     await this.authService.invalidateOtherUserTokens(user._id, null);
-                    console.log("Email verify");
+                    return PugTools.res({
+                        message: "Email verify",
+                    });
                 }).catch(err => {
-                    return console.error(err);
+                    console.error(err);
+                    return PugTools.res({
+                        message: "ACTIVE_USER_ERROR",
+                    });
                 });
             } else {
-                return console.log("Token invalid");
+                return PugTools.res({
+                    message: "Token invalid",
+                });
             }
         } catch (err) {
-            return console.log("Token invalid");
+            return PugTools.res({
+                message: "Token invalid",
+            });
         }
     }
 }

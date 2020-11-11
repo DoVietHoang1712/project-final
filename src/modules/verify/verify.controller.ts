@@ -12,12 +12,12 @@ export class VerifyController {
 
     @Get("register/:activeToken")
     async verifyUser(@Param("activeToken") activeToken: string, @Res() res: Response): Promise<void> {
-        return this.verifyService.userRegister(activeToken);
+        res.render("users/verify", await this.verifyService.userRegister(activeToken));
     }
 
     @Get("email/:activeToken")
     async validateEmail(@Param("activeToken") activeToken: string, @Res() res: Response): Promise<void> {
-        return this.verifyService.verifyEmail(activeToken);
+        res.render("users/verify", await this.verifyService.verifyEmail(activeToken));
     }
 
 }

@@ -5,7 +5,7 @@ import { SERVER_ADDRESS } from "../config/secrets";
 export class HandleExcelTool {
     static async exportTemplate() {
         return {
-            url: `${SERVER_ADDRESS}/data/template.xlsx`,
+            url: `${SERVER_ADDRESS}:3020/data/template.xlsx`,
         };
     }
 

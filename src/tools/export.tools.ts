@@ -24,7 +24,7 @@ export class ExportTool {
         const wopts = { bookType: "xlsx", bookSST: false, type: "array" };
         XLSX.writeFile(wb, `./uploads/data/${fileName}`);
         return {
-            url: `${SERVER_ADDRESS}/data/${fileName}`,
+            url: `${SERVER_ADDRESS}:3020/data/${fileName}`,
         };
     }
 
@@ -66,7 +66,7 @@ export class ExportTool {
         const wopts = { bookType: "xlsx", bookSST: false, type: "array" };
         XLSX.writeFile(wb, `./uploads/data/${fileName}`);
         return {
-            url: `${SERVER_ADDRESS}/data/${fileName}`,
+            url: `${SERVER_ADDRESS}:3020/data/${fileName}`,
         };
     }
 }
