@@ -1,3 +1,4 @@
+import { UploadChungModule } from "./modules/upload-chung/upload-chung.module";
 import { FavouriteModule } from "./modules/favourite/favourite.module";
 import { VerifyModule } from "./modules/verify/verify.module";
 import { AuthModule } from "./modules/auth/auth.module";
@@ -23,6 +24,7 @@ const redisStore = require("cache-manager-redis-store");
         AuthModule,
         VerifyModule,
         FavouriteModule,
+        UploadChungModule,
     ],
     providers: [
         {

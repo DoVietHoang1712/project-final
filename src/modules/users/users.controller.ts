@@ -27,7 +27,7 @@ import { UpdateUserDTO } from "./dto/update-user.dto";
 import { SystemInfo, User } from "./users.schema";
 import { UsersService } from "./users.service";
 
-@Controller("sotay/users")
+@Controller("users")
 @ApiCommonErrors()
 @ApiTags("Users")
 export class UsersController {

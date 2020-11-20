@@ -1,13 +1,15 @@
 import multer = require("multer");
 import * as fs from "fs";
 import * as sharp from "sharp";
+import * as archiver from "archiver";
+import * as bluebird from "bluebird";
+import * as path from "path";
 import { parse } from "url";
 import { BackendErrorDTO } from "../common/dto/backend-error.dto";
 import { SERVER_ADDRESS } from "../config/secrets";
 import { StringTool } from "./string.tool";
 import { Schema, Model, model, Document } from "mongoose";
 import { MulterOptions } from "@nestjs/platform-express/multer/interfaces/multer-options.interface";
-
 export enum EUploadFolder {
     IMAGE = "images",
     DOCUMENT = "documents",
@@ -96,6 +98,29 @@ export class UploadTool {
             });
     }
 
+    static removeFileURL(fileURL: string) {
+        if (fileURL) {
+            const filePath = this.getPath(fileURL);
+            fs.unlink(filePath, (err1: Error) => {
+                if (err1) {
+                    console.error(err1);
+                } else {
+                    this.uploadPathModel
+                        .findOneAndDelete({ url: fileURL })
+                        .exec()
+                        .then(() => {
+                            console.log(`Deleted ${fileURL}`);
+                        })
+                        .catch(err2 => {
+                            console.error(
+                                `Error delete ${fileURL}: ${err2.message}`,
+                            );
+                        });
+                }
+            });
+        }
+    }
+
     static imageUpload: MulterOptions = {
         storage: multer.diskStorage({
             destination: `./uploads/${EUploadFolder.IMAGE}`,
@@ -156,4 +181,68 @@ export class UploadTool {
         }),
     };
 
+    static async createZipArchive(
+        archiveName: string,
+        relativeFilePaths: string[],
+    ): Promise<{
+        absolutePath: string;
+        url: string;
+    }> {
+        const archiveZipName = `${archiveName}.zip`;
+        const archivePath = path.join(
+            __dirname,
+            `../../uploads/${EUploadFolder.IMAGE}/${archiveZipName}`,
+        );
+        const archiveURL = UploadTool.getURL(
+            EUploadFolder.IMAGE,
+            archiveZipName,
+        );
+        const archive = archiver("zip", {
+            zlib: { level: 9 },
+        });
+        const output = fs.createWriteStream(archivePath);
+        archive.pipe(output);
+        const p = new Promise<{
+            absolutePath: string;
+            url: string;
+        }>(async (resolve1, reject1) => {
+            // Handle output events
+            output.on("close", () => {
+                console.log(archive.pointer(), "total bytes");
+                resolve1({
+                    absolutePath: archivePath,
+                    url: archiveURL,
+                });
+            });
+            // Handle archive events
+            archive.on("error", err => {
+                reject1(err);
+            });
+            await bluebird.Promise.map(relativeFilePaths, async filePath => {
+                const filename = path.basename(filePath);
+                const stream = fs.createReadStream(filePath);
+                archive.append(stream, { name: filename });
+                return new Promise((resolve2, reject2) => {
+                    stream.on("error", err => {
+                        reject2(err);
+                    });
+                    stream.on("close", () => {
+                        resolve2();
+                    });
+                });
+            }).catch(err => {
+                reject1(err);
+            });
+            archive.finalize();
+        }).catch(err => {
+            UploadTool.removeFileURL(
+                UploadTool.getURL(
+                    EUploadFolder.IMAGE,
+                    path.basename(archivePath),
+                ),
+            );
+            throw err;
+        });
+        return p;
+    }
 }

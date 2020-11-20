@@ -14,6 +14,14 @@ export const FavouriteSchema = new mongoose.Schema({
         type: ObjectID,
         ref: USER_DB,
     },
+    files: [{
+        type: String,
+        required: false,
+    }],
+    fileURL: {
+        type: String,
+        required: false,
+    },
     loai: {
         type: String,
         required: false,
@@ -26,6 +34,10 @@ export class Favourite {
 
     @ApiProperty()
     loai: string;
+
+    @ApiProperty()
+    files: string[];
+    fileURL: string;
     nguoiThem: ObjectID | string;
 }
 

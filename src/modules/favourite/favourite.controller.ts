@@ -47,7 +47,7 @@ export class FavouriteController {
         @Req() req: Express.Request,
     ): Promise<any> {
         body.nguoiThem = (req.user as any)._id;
-        const data = await this.favouriteService.create(body);
+        const data = await this.favouriteService.createFav(body);
         return ResponseTool.CREATED(data);
     }
 }
