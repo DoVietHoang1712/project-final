@@ -18,7 +18,7 @@ export class SystemInfoGuard implements CanActivate {
             ||
         {
             indentityValidate: [true],
-            emailValidate: [true],
+            emailValidate: [false, true],
             thirdPartyAuth: [false, true],
         };
         const user = context.switchToHttp().getRequest().user as UserDocument;
