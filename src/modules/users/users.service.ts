@@ -291,7 +291,7 @@ export class UsersService {
         await user.save();
         SMTPMailer.sendMail(
             user.email,
-            "Quên mật khẩu tài khoản ứng dụng sổ tay sinh viên",
+            "Quên mật khẩu tài khoản",
             EmailTool.resetPasswordEmail(user.hoTen, user.username, token),
         );
         return { success: true };
@@ -389,7 +389,7 @@ export class UsersService {
             return result;
         } else {
             if (user) {
-                throw new BackendErrorDTO(403, "Không thể xoá tài khoản quản trị!");
+                throw new BackendErrorDTO(403, "Không thể xoá tài khoản admin!");
             } else {
                 return null;
             }
@@ -408,7 +408,7 @@ export class UsersService {
             return result;
         } else {
             if (user) {
-                throw new BackendErrorDTO(403, "Không thể xoá tài khoản quản trị!");
+                throw new BackendErrorDTO(403, "Không thể xoá tài khoản admin!");
             } else {
                 return null;
             }
