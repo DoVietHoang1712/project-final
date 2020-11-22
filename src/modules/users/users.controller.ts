@@ -123,40 +123,40 @@ export class UsersController {
         return await this.userService.changePasswordByUserID(userId, data, jti);
     }
 
-    @Post("force/activate")
-    @Authorization()
-    @Roles(ERole.ADMIN)
-    @ApiBody({ type: ForceActiveDTO })
-    async forceActivate(
-        @Req() req: Request,
-        @Body("idUser") id: string,
-    ): Promise<ResponseDTO> {
-        const jti = (req.user as User).jti;
-        const data = await this.userService.forceActivate(id, jti);
-        return ResponseTool.POST_OK(data);
-    }
+    // @Post("force/activate")
+    // @Authorization()
+    // @Roles(ERole.ADMIN)
+    // @ApiBody({ type: ForceActiveDTO })
+    // async forceActivate(
+    //     @Req() req: Request,
+    //     @Body("idUser") id: string,
+    // ): Promise<ResponseDTO> {
+    //     const jti = (req.user as User).jti;
+    //     const data = await this.userService.forceActivate(id, jti);
+    //     return ResponseTool.POST_OK(data);
+    // }
 
-    @Post("force/reset-password")
-    @Authorization()
-    @Roles(ERole.ADMIN)
-    @ApiBody({ type: ForceActiveDTO })
-    async forceResetPassword(
-        @Body("idUser") id: string,
-    ): Promise<ResponseDTO> {
-        const data = await this.userService.forceResetPassword(id);
-        return ResponseTool.POST_OK(data);
-    }
+    // @Post("force/reset-password")
+    // @Authorization()
+    // @Roles(ERole.ADMIN)
+    // @ApiBody({ type: ForceActiveDTO })
+    // async forceResetPassword(
+    //     @Body("idUser") id: string,
+    // ): Promise<ResponseDTO> {
+    //     const data = await this.userService.forceResetPassword(id);
+    //     return ResponseTool.POST_OK(data);
+    // }
 
-    @Post("force/reset-password-by-cond")
-    @Authorization()
-    @Roles(ERole.ADMIN)
-    @ApiQueryCond()
-    async forceResetPassByCond(
-        @QueryGet() query: QueryPostOption,
-    ) {
-        const res = await this.userService.forceResetPasswordByCond(query.conditions);
-        return ResponseTool.POST_OK(res);
-    }
+    // @Post("force/reset-password-by-cond")
+    // @Authorization()
+    // @Roles(ERole.ADMIN)
+    // @ApiQueryCond()
+    // async forceResetPassByCond(
+    //     @QueryGet() query: QueryPostOption,
+    // ) {
+    //     const res = await this.userService.forceResetPasswordByCond(query.conditions);
+    //     return ResponseTool.POST_OK(res);
+    // }
 
     @ApiConsumes("multipart/form-data")
     @UseInterceptors(FileInterceptor("anhDaiDien", UploadTool.imageUpload))
