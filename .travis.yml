@@ -13,9 +13,9 @@ env:
   
 
 before_script:
-  - echo "$REGISTRY_USER"
-  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
-  - docker pull "$IMAGE_NAME" || true
+  - echo $REGISTRY_USER
+  - docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+  - docker pull $IMAGE_NAME || true
 
 script:
   - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
