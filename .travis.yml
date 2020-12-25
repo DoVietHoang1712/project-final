@@ -1,0 +1,34 @@
+sudo: required
+
+services: 
+  - docker
+
+env: 
+  global:
+    - IMAGE_NAME = hoang1712/project-final
+    - REGISTRY_USER = hoang1712
+    - REGISTRY_PASS = hoang17122000
+    
+# before_install:
+  
+
+before_script:
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - docker pull "$IMAGE_NAME" || true
+
+script:
+  - docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+
+after_script:
+  - docker images
+
+before_deploy: 
+  - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:lastest"
+  - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${TRAVIS_COMMIT}"
+
+deploy: 
+  provider: script
+  script: docker push "${IMAGE_NAME}:lastest" && docker push "${IMAGE_NAME}:${TRAVIS_COMMIT}"
+  on:
+    branch: main

@@ -1,4 +1,4 @@
-FROM node:12.13-alpine As development
+FROM hoang1712/biglib:latest
 
 WORKDIR /usr/src/app
 
@@ -11,3 +11,5 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+
+CMD [ "npm", "run", "start" ]
