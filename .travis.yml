@@ -35,3 +35,7 @@ deploy:
   script: docker push ${IMAGE_NAME}:latest
   on:
     branch: main
+
+after_deploy:
+  - docker rmi -f ${IMAGE_NAME}:${TRAVIS_COMMIT} || true
+  - docker images
