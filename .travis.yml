@@ -19,6 +19,7 @@ before_script:
 
 script:
   - docker build --cache-from ${IMAGE_NAME}:latest --tag ${IMAGE_NAME}:${TRAVIS_COMMIT} .
+  - docker push ${IMAGE_NAME}:${TRAVIS_COMMIT}
 
 after_script:
   - docker images
