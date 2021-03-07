@@ -9,7 +9,7 @@ pipeline {
         stage("Test") {
             agent {
                 docker {
-                    image 'node:12-alpine' 'python:3.8-slim-buster'
+                    image 'nikolaik/python-nodejs:python3.8-nodejs12-slim'
                     args '-u 0:0 -v /tmp:/root/.cache'
                 }
             }
