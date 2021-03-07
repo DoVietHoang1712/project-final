@@ -14,7 +14,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'apt-get -y install build-essential'
+                sh 'sudo apt-get install build-essential -y'
                 sh 'npm install'
                 sh 'npm run test'
             }
