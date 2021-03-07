@@ -10,6 +10,7 @@ pipeline {
             agent {
                 docker {
                     image 'node:12-alpine'
+                    image 'python:3.8-slim-buster'
                     args '-u 0:0 -v /tmp:/root/.cache'
                 }
             }
