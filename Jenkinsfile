@@ -9,12 +9,11 @@ pipeline {
         stage("Test") {
             agent {
                 docker {
-                    image 'nikolaik/python-nodejs:python3.8-nodejs12-slim'
+                    image 'node:12'
                     args '-u 0:0 -v /tmp:/root/.cache'
                 }
             }
             steps {
-                sh 'apt-get install build-essential -y'
                 sh 'npm install'
                 sh 'npm run test'
             }
