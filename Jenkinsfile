@@ -9,7 +9,7 @@ pipeline {
         stage("Test") {
             agent {
                 docker {
-                    image 'node:12.21-buster-slim'
+                    image 'node:12-alpine'
                     args '-u 0:0 -v /tmp:/root/.cache'
                 }
             }
