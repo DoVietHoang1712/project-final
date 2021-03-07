@@ -14,7 +14,8 @@ pipeline {
                 }
             }
             steps {
-                sh 'npm i'
+                sh 'apt-get -y install build-essential'
+                sh 'npm install'
                 sh 'npm run test'
             }
         }
