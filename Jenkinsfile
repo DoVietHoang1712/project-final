@@ -15,8 +15,16 @@ pipeline {
             }
             steps {
                 sh 'npm install'
-                sh 'npm run test'
+            
             }
+        }
+    }
+    post {
+        success {
+            echo "SUCCESSFUL"
+        }
+        failure {
+            echo "FAILED"
         }
     }
 }
