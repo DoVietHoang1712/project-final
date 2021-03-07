@@ -1,15 +1,14 @@
-FROM hoang1712/biglib:latest
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm i -g @nestjs/cli
-
+FROM node:12-alpine
+ADD . /app
+WORKDIR /app
+COPY ["package.json", "package-lock.json", "tsconfig.*", "nest-cli.json", "./"]
 RUN npm install
-
-COPY . .
-
 RUN npm run build
 
-CMD [ "npm", "run", "start" ]
+FROM node:12-alpine
+WORKDIR /app
+COPY --from=0 /app /app
+# COPY --from=0 /server/dist .
+# COPY --from=0 /server/node_modules .
+EXPOSE 3020
+CMD npm run start

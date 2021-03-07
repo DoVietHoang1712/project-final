@@ -29,6 +29,11 @@ before_deploy:
   - docker pull ${IMAGE_NAME}:${TRAVIS_COMMIT}
   - docker tag ${IMAGE_NAME}:${TRAVIS_COMMIT} ${IMAGE_NAME}:latest
   - docker push ${IMAGE_NAME}:latest
+  - ssh-keygen -t rsa -b 4096 -C 'build@travis-ci.org' -f ./deploy_rsa
+  - travis encrypt-file deploy_rsa --add
+  - ssh-copy-id -i deploy_rsa.pub hoang171220001@<deploy-host>
+  - rm -f deploy_rsa deploy_rsa.pub
+  - git add deploy_rsa.enc .travis.yml
 
 deploy: 
   provider: script
@@ -37,5 +42,5 @@ deploy:
     branch: main
 
 after_deploy:
-  - docker rmi -f ${IMAGE_NAME}:${TRAVIS_COMMIT} || true
+  - docker rm -f ${IMAGE_NAME}:${TRAVIS_COMMIT} || true
   - docker images
