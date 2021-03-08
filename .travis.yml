@@ -6,15 +6,13 @@ services:
 env: 
   global:
     - IMAGE_NAME = hoang1712/project-final
-    - REGISTRY_USER = hoang1712
-    - REGISTRY_PASS = hoang17122000
     
 # before_install:
   
 
 before_script:
   - echo ${REGISTRY_USER}
-  - docker login -u hoang1712 -p hoang17122000
+  - docker login -u hoang1712
   - docker pull ${IMAGE_NAME} || true
 
 script:
