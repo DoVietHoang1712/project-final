@@ -1,4 +1,4 @@
-FROM nikolaik/python-nodejs:python3.8-nodejs12-alpine
+FROM node:12
 ADD . /app
 WORKDIR /app
 COPY ["package.json", "package-lock.json", "tsconfig.*", "nest-cli.json", "./"]
